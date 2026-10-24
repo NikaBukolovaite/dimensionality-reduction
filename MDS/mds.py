@@ -62,12 +62,13 @@ def plot_projection(Y, data, title, path):
         ax.scatter(Y[normal, 0], Y[normal, 1], s=7, alpha=0.5, color=COLOURS[cls])
         ax.scatter(Y[outlier, 0], Y[outlier, 1], s=20, color=COLOURS[cls], edgecolors="black")
 
-    # legenda: klasės + išskirties žymėjimas
+    # legenda: klasės + išskirties žymėjimas (tik jei aibėje yra išskirčių, C aibėje jų nėra)
     handles = [plt.Line2D([], [], marker="o", linestyle="", markersize=7,
                           color=COLOURS[cls], label=cls) for cls in CLASSES]
-    handles.append(plt.Line2D([], [], marker="o", linestyle="", markersize=7,
-                              markerfacecolor="white", markeredgecolor="black",
-                              label="ekstremali išskirtis"))
+    if data["ekstremali_isskirtis"].any():
+        handles.append(plt.Line2D([], [], marker="o", linestyle="", markersize=7,
+                                  markerfacecolor="white", markeredgecolor="black",
+                                  label="ekstremali išskirtis"))
 
     ax.set_aspect("equal", adjustable="datalim")
     ax.set_xticks([])
