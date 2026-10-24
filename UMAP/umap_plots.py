@@ -6,8 +6,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-DATA_FILE = Path("data") / "A_norm.csv"
-UMAP_DIR = Path("rezultatai") / "umap"
+ROOT = Path(__file__).resolve().parent.parent
+
+DATA_FILE = ROOT / "data" / "A_norm.csv"
+UMAP_DIR = ROOT / "rezultatai" / "umap"
 PARAMS_DIR = UMAP_DIR / "projekcijos"
 STABILITY_DIR = UMAP_DIR / "stabilumas"
 PARAMS_FILE = UMAP_DIR / "umap_parametrai.csv"

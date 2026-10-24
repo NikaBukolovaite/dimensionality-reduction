@@ -1,5 +1,6 @@
 from itertools import combinations
 from pathlib import Path
+import sys
 import time
 import warnings
 
@@ -9,13 +10,16 @@ import umap
 from scipy.spatial.distance import pdist
 from scipy.stats import spearmanr
 
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
 from metrics import evaluate_projection, neighbor_overlap
 from umap_plots import metric_line, parameters_title, plot_projection
 
 warnings.filterwarnings("ignore", message="n_jobs value")
 
-DATA_DIR = Path("data")
-UMAP_DIR = Path("rezultatai") / "umap"
+DATA_DIR = ROOT / "data"
+UMAP_DIR = ROOT / "rezultatai" / "umap"
 STABILITY_DIR = UMAP_DIR / "stabilumas"
 COMPARE_DIR = UMAP_DIR / "jautrumas"
 FIGURES_DIR = UMAP_DIR / "grafikai" / "jautrumas"
