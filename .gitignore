@@ -1,3 +1,6 @@
 ﻿__pycache__/
+PCA/.venv/
 .venv/
 *.pyc
+/PCA/.venv/
+
