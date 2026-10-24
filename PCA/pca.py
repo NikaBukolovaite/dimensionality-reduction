@@ -64,15 +64,25 @@ def plot_variance(variance_percent):
     cumulative = np.cumsum(variance_percent)
 
     fig, ax = plt.subplots(figsize=(7, 4.5))
-    ax.bar(pcs, variance_percent, color="#2a78d6", label="komponentės dispersija")
+    ax.bar(pcs, variance_percent, color="#2a78d6", alpha=0.85, label="komponentės dispersija")
     ax.plot(pcs, cumulative, color="black", marker="o", label="sukaupta dispersija")
-    for x, y in zip(pcs, cumulative):
-        ax.annotate(f"{y:.1f} %", (x, y), textcoords="offset points", xytext=(0, 7), ha="center")
+
+    # reikšmės ant stulpelių
+    for x, y in zip(pcs, variance_percent):
+        ax.annotate(f"{y:.1f} %".replace(".", ","), (x, y), textcoords="offset points",
+                    xytext=(0, 4), ha="center", fontsize=9, color="#2a78d6")
+
+    # sukauptos reikšmės (PC1 praleidžiam – ji tokia pati kaip stulpelio)
+    for x, y in zip(pcs[1:], cumulative[1:]):
+        ax.annotate(f"{y:.1f} %".replace(".", ","), (x, y), textcoords="offset points",
+                    xytext=(0, 8), ha="center", fontsize=9)
 
     ax.set_ylabel("Išsaugota dispersija, %")
-    ax.set_ylim(0, 105)
+    ax.set_ylim(0, 112)
     ax.set_title("Išsaugota dispersija pagal komponenčių skaičių")
     ax.legend(frameon=False, loc="center right")
+    for side in ["top", "right"]:
+        ax.spines[side].set_visible(False)
 
     fig.savefig(OUTPUT_DIR / "pca_dispersija.png", dpi=200, bbox_inches="tight")
     plt.close(fig)
@@ -122,9 +132,10 @@ def main():
     loadings = pd.DataFrame(eigenvectors, index=FEATURES, columns=pcs)
     print("Požymių svoriai:")
     print(loadings.round(3), "\n")
-    print("(skaiciuoja)")
+
     metrics = {}
     for d in [2, 3]:
+        print("(skaiciuoja)")
         Y = project(X, mean, eigenvectors, d)
         metrics[f"{d}D"] = evaluate_projection(X, Y, labels)
     metrics = pd.DataFrame(metrics)
