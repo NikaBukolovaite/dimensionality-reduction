@@ -24,17 +24,26 @@ FEATURES_B = [f for f in FEATURES if f != "RR_sant_post"]
 def plot_projection(Y, data, variance_percent, title, file_name):
     fig, ax = plt.subplots(figsize=(8.5, 7))
 
+    # išskirtys su juodu kraštu
     for cls in CLASSES:
         normal = (data["klase"] == cls) & ~data["ekstremali_isskirtis"]
         outlier = (data["klase"] == cls) & data["ekstremali_isskirtis"]
-        ax.scatter(Y[normal, 0], Y[normal, 1], s=7, alpha=0.5, color=COLOURS[cls], label=cls)
+        ax.scatter(Y[normal, 0], Y[normal, 1], s=7, alpha=0.5, color=COLOURS[cls])
         ax.scatter(Y[outlier, 0], Y[outlier, 1], s=20, color=COLOURS[cls], edgecolors="black")
+
+    # legenda: klasės + išskirties žymėjimas
+    handles = [plt.Line2D([], [], marker="o", linestyle="", markersize=7,
+                          color=COLOURS[cls], label=cls) for cls in CLASSES]
+    handles.append(plt.Line2D([], [], marker="o", linestyle="", markersize=7,
+                              markerfacecolor="white", markeredgecolor="black",
+                              label="ekstremali išskirtis"))
 
     ax.set_aspect("equal", adjustable="datalim")
     ax.set_xlabel(f"PC1 ({variance_percent[0]:.1f} %)")
     ax.set_ylabel(f"PC2 ({variance_percent[1]:.1f} %)")
     ax.set_title(title)
-    ax.legend(title="Klasė", markerscale=2, frameon=False)
+    ax.legend(handles=handles, title="Klasė", frameon=False,
+              loc="upper left", bbox_to_anchor=(1.01, 1))
 
     fig.savefig(OUTPUT_DIR / file_name, dpi=200, bbox_inches="tight")
     plt.close(fig)
