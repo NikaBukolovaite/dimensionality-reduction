@@ -21,7 +21,6 @@ CLASS_COLUMN = "klase"
 OUTLIER_COLUMN = "ekstremali_isskirtis"
 CLASSES = ["N", "L", "R", "V", "A"]
 
-# Tos pačios klasių spalvos kaip LD1 grafikuose.
 CLASS_COLOURS = {
     "N": "#2a78d6",
     "L": "#eb6834",
