@@ -13,6 +13,7 @@
 #           rezultatai/umap/umap_stabilumas_suvestine.csv (vidurkis ± std)
 
 from pathlib import Path
+import sys
 import time
 import warnings
 
@@ -20,12 +21,15 @@ import numpy as np
 import pandas as pd
 import umap
 
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
 from metrics import evaluate_projection
 
 warnings.filterwarnings("ignore", message="n_jobs value")
 
-INPUT_FILE = Path("data") / "A_norm.csv"
-OUTPUT_DIR = Path("rezultatai") / "umap"
+INPUT_FILE = ROOT / "data" / "A_norm.csv"
+OUTPUT_DIR = ROOT / "rezultatai" / "umap"
 RUNS_FILE = OUTPUT_DIR / "umap_stabilumas.csv"
 SUMMARY_FILE = OUTPUT_DIR / "umap_stabilumas_suvestine.csv"
 PROJECTIONS_DIR = OUTPUT_DIR / "stabilumas"
