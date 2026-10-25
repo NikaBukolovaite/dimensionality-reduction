@@ -1,4 +1,4 @@
-"ka darom: naudojam A aibe, atliekam MDS (SMACOF) metrini ir nemetrini variantus, ivertinam abu (metrics.py), issaugom lenteles ir grafikus i rezultatai/mds/A/. Pradines koordinates imam is PCA, kad rezultatas butu stabilus (nemetrinis MDS su atsitiktine pradzia nesukonverguoja)."
+"ka darom: naudojam A aibe, atliekam MDS (SMACOF) metrini ir nemetrini variantus, ivertinam abu (metrics.py), issaugom lenteles ir grafikus i rezultatai/mds/A/. Pradines koordinates imam is PCA, kad rezultatas butu stabilus (nemetrinis MDS su atsitiktine pradzia nesukonverguoja). Palyginimui abu variantai paleidziami ir su numatytaja atsitiktine pradzia."
 
 import os
 import sys
@@ -33,15 +33,12 @@ CLASSES = ["N", "L", "R", "V", "A"]
 COLOURS = {"N": "#2a78d6", "L": "#eb6834", "R": "#1baf7a", "V": "#eda100", "A": "#e87ba4"}
 
 VARIANTS = ["metrinis", "nemetrinis"]   # naudojami ir mds_AB.py, mds_AC.py
+STARTS = ["PCA", "atsitiktinė"]         # pradinės koordinatės (tik A aibėje)
 MAX_ITER = 300
 RANDOM_STATE = 0
 
 
-def run_mds(X, variant):
-    # pradinės koordinatės – PCA 2D projekcija (vienodos abiem variantams)
-    mean, eigenvalues, eigenvectors = fit_pca(X)
-    start = project(X, mean, eigenvectors, 2)
-
+def run_mds(X, variant, start="PCA"):
     model = MDS(
         n_components=2,
         metric=(variant == "metrinis"),
@@ -50,7 +47,15 @@ def run_mds(X, variant):
         random_state=RANDOM_STATE,
         dissimilarity="euclidean",
     )
-    return model.fit_transform(X, init=start)
+
+    # atsitiktinė pradžia – sklearn numatytoji
+    if start == "atsitiktinė":
+        return model.fit_transform(X)
+
+    # pradinės koordinatės – PCA 2D projekcija (vienodos abiem variantams)
+    mean, eigenvalues, eigenvectors = fit_pca(X)
+    initial = project(X, mean, eigenvectors, 2)
+    return model.fit_transform(X, init=initial)
 
 
 def plot_projection(Y, data, title, path):
@@ -93,13 +98,16 @@ def main():
 
     metrics = {}
     for variant in VARIANTS:
-        print(f"(skaiciuoja {variant} MDS, ~1 min)")
-        Y = run_mds(X, variant)
-        metrics[variant] = evaluate_projection(X, Y, labels)
+        for start in STARTS:
+            print(f"(skaiciuoja {variant} MDS, {start} pradžia, ~1 min)")
+            Y = run_mds(X, variant, start)
+            metrics[f"{variant} ({start})"] = evaluate_projection(X, Y, labels)
 
-        np.save(OUTPUT_DIR / f"mds_A_{variant}.npy", Y)
-        plot_projection(Y, data, f"MDS ({variant}): A aibės projekcija",
-                        OUTPUT_DIR / f"mds_A_{variant}.png")
+            # projekcijos ir grafikai – tik pagrindinei (PCA) pradžiai
+            if start == "PCA":
+                np.save(OUTPUT_DIR / f"mds_A_{variant}.npy", Y)
+                plot_projection(Y, data, f"MDS ({variant}): A aibės projekcija",
+                                OUTPUT_DIR / f"mds_A_{variant}.png")
 
     metrics = pd.DataFrame(metrics)
     print("\nProjekcijos kokybė:")
