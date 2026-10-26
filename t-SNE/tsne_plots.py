@@ -7,7 +7,8 @@
 #
 # Projekcijos neskaičiuojamos iš naujo – naudojami .npy failai, kuriuos
 # išsaugojo tsne_params.py, tsne_stability.py ir tsne_compare.py.
-
+import warnings
+warnings.filterwarnings("ignore", message=".*encountered in matmul")
 from pathlib import Path
 import sys
 

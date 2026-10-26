@@ -12,7 +12,8 @@
 #
 # Įvestis: data/A_norm.csv (sukuria scaling.py)
 # Išvestis: rezultatai/tsne/tsne_parametrai.csv ir projekcijos .npy failai
-
+import warnings
+warnings.filterwarnings("ignore", message=".*encountered in matmul")
 from itertools import product
 from pathlib import Path
 import sys

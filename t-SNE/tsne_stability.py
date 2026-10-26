@@ -13,7 +13,8 @@
 # Įvestis: data/A_norm.csv
 # Išvestis: rezultatai/tsne/tsne_stabilumas.csv (visi paleidimai)
 #           rezultatai/tsne/tsne_stabilumas_suvestine.csv (vidurkis ± std)
-
+import warnings
+warnings.filterwarnings("ignore", message=".*encountered in matmul")
 from pathlib import Path
 import sys
 import time

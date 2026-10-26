@@ -18,6 +18,9 @@
 # Įvestis: data/A_norm.csv, data/B_norm.csv, data/C_norm.csv,
 #          rezultatai/tsne/stabilumas/*.npy (iš tsne_stability.py)
 
+import warnings
+warnings.filterwarnings("ignore", message=".*encountered in matmul")
+
 from itertools import combinations
 from pathlib import Path
 import sys
